@@ -1,0 +1,205 @@
+<main class="page-container">
+  <header class="page-header">
+    <div class="header-left">
+      <a routerLink="/dashboard" class="btn-back">
+        <i class="ph ph-arrow-left"></i>
+        <span>Retour</span>
+      </a>
+      <h1>Suivi Financier</h1>
+    </div>
+    <nav class="header-nav">
+      <a routerLink="/rendez-vous" class="nav-item"><i class="ph ph-calendar"></i> Agenda</a>
+      <a routerLink="/clients" class="nav-item"><i class="ph ph-users"></i> Clients</a>
+    </nav>
+  </header>
+
+  <section class="filter-card card">
+    <form [formGroup]="filterForm" (ngSubmit)="loadSummary()" class="filter-row">
+      <div class="filter-group">
+        <label>Du</label>
+        <input type="date" formControlName="debut">
+      </div>
+      <div class="filter-group">
+        <label>Au</label>
+        <input type="date" formControlName="fin">
+      </div>
+      <div class="filter-actions">
+        <button type="submit" class="btn-filter-main">Filtrer</button>
+        <button type="button" (click)="setToday()" class="btn-subtle">Aujourd'hui</button>
+        <button type="button" (click)="setCurrentMonth()" class="btn-subtle">Ce mois</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="stats-overview">
+    <article class="stat-box highlight-pink">
+      <div class="stat-icon"><i class="ph ph-trend-up"></i></div>
+      <div class="stat-content">
+        <span class="label">Chiffre d'affaires</span>
+        <span class="value">{{ summary()?.chiffreAffaires || 0 | number:'1.2-2' }} €</span>
+      </div>
+    </article>
+    <article class="stat-box highlight-orange">
+      <div class="stat-icon"><i class="ph ph-shopping-cart"></i></div>
+      <div class="stat-content">
+        <span class="label">Dépenses</span>
+        <span class="value">{{ summary()?.totalDepenses || 0 | number:'1.2-2' }} €</span>
+      </div>
+    </article>
+    <article class="stat-box highlight-green">
+      <div class="stat-icon"><i class="ph ph-bank"></i></div>
+      <div class="stat-content">
+        <span class="label">Résultat Net</span>
+        <span class="value">{{ summary()?.resultatNet || 0 | number:'1.2-2' }} €</span>
+      </div>
+    </article>
+    <article class="stat-box">
+      <div class="stat-icon"><i class="ph ph-scissors"></i></div>
+      <div class="stat-content">
+        <span class="label">Prestations</span>
+        <span class="value">{{ summary()?.prestationsTerminees || 0 }}</span>
+      </div>
+    </article>
+    <article class="stat-box">
+      <div class="stat-icon"><i class="ph ph-calculator"></i></div>
+      <div class="stat-content">
+        <span class="label">Ticket Moyen</span>
+        <span class="value">{{ summary()?.ticketMoyen || 0 | number:'1.2-2' }} €</span>
+      </div>
+    </article>
+  </section>
+
+  <div class="finance-grid">
+    <aside class="sidebar-form">
+      <div class="card form-card">
+        <div class="card-header">
+          <i class="ph-fill ph-receipt"></i>
+          <h2>{{ editingExpense() ? 'Modifier Dépense' : 'Nouvelle Dépense' }}</h2>
+        </div>
+
+        <form [formGroup]="expenseForm" (ngSubmit)="submitExpense()" class="finance-form">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" formControlName="dateDepense">
+            <p *ngIf="hasExpenseError('dateDepense', 'required')" class="error-text">Obligatoire.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Libellé</label>
+            <input type="text" formControlName="libelle" placeholder="Ex: Matériel, Loyer...">
+            <p *ngIf="hasExpenseError('libelle', 'required')" class="error-text">Libellé obligatoire.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Catégorie</label>
+            <div class="select-wrapper">
+              <select formControlName="categorie">
+                <option *ngFor="let category of expenseCategories" [ngValue]="category">{{ category }}</option>
+              </select>
+              <i class="ph ph-caret-down"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Montant (€)</label>
+            <input type="number" min="0" step="0.01" formControlName="montant">
+            <p *ngIf="hasExpenseError('montant', 'min')" class="error-text">Montant invalide.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Notes (optionnel)</label>
+            <textarea rows="3" formControlName="notes"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="savingExpense() || expenseForm.invalid">
+              {{ savingExpense() ? 'Enregistrement...' : editingExpense() ? 'Enregistrer' : 'Ajouter Dépense' }}
+            </button>
+            <button *ngIf="editingExpense()" type="button" class="btn-secondary" (click)="cancelExpenseEdit()">
+              Annuler
+            </button>
+          </div>
+        </form>
+      </div>
+    </aside>
+
+    <section class="main-tables">
+      <div class="card table-panel">
+        <div class="card-header space-between">
+          <div class="title-with-icon">
+            <i class="ph ph-list-numbers"></i>
+            <h2>Liste des Dépenses</h2>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div *ngIf="!loading() && !summary()?.depenses?.length" class="state-empty-small">
+            <p>Aucune dépense enregistrée sur cette période.</p>
+          </div>
+
+          <table *ngIf="!loading() && summary()?.depenses?.length">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Libellé</th>
+                <th>Catégorie</th>
+                <th class="text-right">Montant</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let exp of summary()?.depenses; trackBy: trackByExpenseId">
+                <td>{{ exp.dateDepense }}</td>
+                <td class="font-bold">{{ exp.libelle }}</td>
+                <td><span class="category-badge">{{ exp.categorie }}</span></td>
+                <td class="text-right expense-val">-{{ exp.montant | number:'1.2-2' }} €</td>
+                <td class="text-right row-actions">
+                  <button (click)="editExpense(exp)" class="btn-action-icon"><i class="ph ph-pencil"></i></button>
+                  <button (click)="deleteExpense(exp)" class="btn-action-icon delete"><i class="ph ph-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card table-panel">
+        <div class="card-header space-between">
+          <div class="title-with-icon">
+            <i class="ph ph-scissors"></i>
+            <h2>Détail des Prestations</h2>
+          </div>
+          <button (click)="exportCsv()" [disabled]="!summary()?.lignes?.length" class="btn-export">
+            <i class="ph ph-file-csv"></i> Exporter CSV
+          </button>
+        </div>
+
+        <div class="table-container">
+          <div *ngIf="loading()" class="state-loading-small">Chargement...</div>
+          <div *ngIf="!loading() && !summary()?.lignes?.length" class="state-empty-small">
+            <p>Aucune prestation terminée sur cette période.</p>
+          </div>
+
+          <table *ngIf="!loading() && summary()?.lignes?.length">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Client</th>
+                <th>Prestation</th>
+                <th class="text-right">Prix</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let line of summary()?.lignes; trackBy: trackByLineId">
+                <td>{{ formatDateTime(line.dateHeure) }}</td>
+                <td class="font-bold">{{ line.clientNom }}</td>
+                <td>{{ line.prestation }}</td>
+                <td class="text-right income-val">+{{ line.prix | number:'1.2-2' }} €</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>

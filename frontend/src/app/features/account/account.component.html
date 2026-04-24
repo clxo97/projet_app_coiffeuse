@@ -1,0 +1,177 @@
+<main class="page-container">
+  <header class="page-header">
+    <div class="header-left">
+      <a routerLink="/dashboard" class="btn-back">
+        <i class="ph ph-arrow-left"></i>
+        <span>Retour</span>
+      </a>
+      <h1>Mon Profil & Paramètres</h1>
+    </div>
+    <nav class="header-nav">
+      <a routerLink="/notifications-sms" class="nav-item"><i class="ph ph-chat-circle-dots"></i> Historique messages</a>
+      <button (click)="logout()" class="btn-logout-header"><i class="ph ph-sign-out"></i> Déconnexion</button>
+    </nav>
+  </header>
+
+  <div class="account-grid">
+    <div class="grid-column">
+      <section class="card profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <i class="ph-fill ph-user-circle"></i>
+          </div>
+          <div class="profile-info">
+            <h2>{{ account()?.nom || 'Chargement...' }}</h2>
+            <p *ngIf="account()?.nomSalon"><i class="ph ph-storefront"></i> {{ account()?.nomSalon }}</p>
+            <p><i class="ph ph-envelope"></i> {{ account()?.email }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card subscription-card" *ngIf="account() as currentAccount">
+        <div class="subscription-header">
+          <div class="subscription-icon" [class.is-active]="currentAccount.abonnementActif">
+            <i [class]="currentAccount.abonnementActif ? 'ph ph-credit-card' : 'ph ph-warning-circle'"></i>
+          </div>
+          <div>
+            <p class="subscription-eyebrow">Abonnement</p>
+            <h2>{{ currentAccount.abonnementActif ? 'Acces actif' : 'Acces limite' }}</h2>
+            <p>
+              Statut : <strong>{{ currentAccount.subscriptionStatus }}</strong>
+              <ng-container *ngIf="currentAccount.abonnementActifJusquAu">
+                · valable jusqu'au {{ currentAccount.abonnementActifJusquAu | date:'mediumDate':'':'fr' }}
+              </ng-container>
+            </p>
+          </div>
+        </div>
+        <p class="subscription-note">
+          Cette version est prete pour un abonnement mensuel. Branche ensuite Stripe Checkout + webhook pour activer
+          automatiquement les comptes apres paiement.
+        </p>
+      </section>
+
+      <section class="card sms-mode-card" *ngIf="smsConfig() as config">
+        <div class="sms-mode-icon" [class.is-twilio]="config.provider === 'twilio' && config.twilioConfigured">
+          <i [class]="config.provider === 'twilio' && config.twilioConfigured ? 'ph-fill ph-paper-plane-tilt' : 'ph ph-terminal-window'"></i>
+        </div>
+        <div>
+          <p class="sms-mode-eyebrow">Configuration messages</p>
+          <h2>{{ config.modeLabel }}</h2>
+          <p>{{ config.description }}</p>
+          <span *ngIf="config.from" class="sms-mode-from">Numéro expéditeur : {{ config.from }}</span>
+        </div>
+      </section>
+
+      <section class="card password-card">
+        <div class="card-header">
+          <i class="ph ph-lock-key"></i>
+          <h2>Sécurité</h2>
+        </div>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="card-form">
+          <div class="form-group">
+            <label>Mot de passe actuel</label>
+            <div class="password-wrapper">
+              <input
+                [type]="showCurrentPassword() ? 'text' : 'password'"
+                formControlName="motDePasseActuel"
+                autocomplete="current-password"
+                placeholder="••••••••"
+              >
+              <button type="button" (click)="toggleCurrentPassword()" class="btn-reveal">
+                <i [class]="showCurrentPassword() ? 'ph ph-eye-closed' : 'ph ph-eye'"></i>
+              </button>
+            </div>
+            <p *ngIf="hasError('motDePasseActuel', 'required')" class="error-text">Obligatoire.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Nouveau mot de passe</label>
+            <div class="password-wrapper">
+              <input
+                [type]="showNewPassword() ? 'text' : 'password'"
+                formControlName="nouveauMotDePasse"
+                autocomplete="new-password"
+                placeholder="Min. 8 caractères"
+              >
+              <button type="button" (click)="toggleNewPassword()" class="btn-reveal">
+                <i [class]="showNewPassword() ? 'ph ph-eye-closed' : 'ph ph-eye'"></i>
+              </button>
+            </div>
+            <p *ngIf="hasError('nouveauMotDePasse', 'required')" class="error-text">Obligatoire.</p>
+            <p *ngIf="hasError('nouveauMotDePasse', 'minlength')" class="error-text">Minimum 8 caractères.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Confirmer le nouveau mot de passe</label>
+            <input
+              type="password"
+              formControlName="confirmationMotDePasse"
+              autocomplete="new-password"
+              placeholder="••••••••"
+            >
+            <p *ngIf="hasError('confirmationMotDePasse', 'required')" class="error-text">Obligatoire.</p>
+            <p *ngIf="showConfirmationError()" class="error-text">Les mots de passe ne correspondent pas.</p>
+          </div>
+
+          <div class="form-messages">
+            <p *ngIf="successMessage()" class="msg-success"><i class="ph ph-check-circle"></i> {{ successMessage() }}</p>
+            <p *ngIf="errorMessage()" class="msg-error"><i class="ph ph-warning-circle"></i> {{ errorMessage() }}</p>
+          </div>
+
+          <button type="submit" class="btn-primary" [disabled]="saving() || form.invalid || !passwordsMatch()">
+            {{ saving() ? 'Enregistrement...' : 'Mettre à jour le mot de passe' }}
+          </button>
+        </form>
+      </section>
+    </div>
+
+    <div class="grid-column">
+      <section class="card sms-templates-card">
+        <div class="card-header">
+          <i class="ph ph-chat-text"></i>
+          <h2>Modèles de messages</h2>
+        </div>
+        <form [formGroup]="smsForm" (ngSubmit)="submitSmsTemplates()" class="card-form">
+          <div class="form-group">
+            <label>Confirmation de nouveau RDV</label>
+            <textarea rows="4" formControlName="modeleSmsConfirmation" maxlength="500"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>RDV déplacé ou modifié</label>
+            <textarea rows="4" formControlName="modeleSmsModification" maxlength="500"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Rappel automatique (24h avant)</label>
+            <textarea rows="4" formControlName="modeleSmsRappel" maxlength="500"></textarea>
+          </div>
+
+          <div class="token-helper">
+            <p>Ces modèles servent pour WhatsApp, Instagram/copier et l'historique des messages. Variables utilisables :</p>
+            <div class="token-list">
+              <span class="token" title="Nom du client">client</span>
+              <span class="token" title="Date et heure du RDV">date</span>
+              <span class="token" title="Nom de la prestation">prestation</span>
+              <span class="token" title="Durée prévue">duree</span>
+            </div>
+          </div>
+
+          <div class="form-messages">
+            <p *ngIf="smsSuccessMessage()" class="msg-success"><i class="ph ph-check-circle"></i> {{ smsSuccessMessage() }}</p>
+            <p *ngIf="smsErrorMessage()" class="msg-error"><i class="ph ph-warning-circle"></i> {{ smsErrorMessage() }}</p>
+          </div>
+
+          <div class="form-actions-dual">
+            <button type="submit" class="btn-primary" [disabled]="savingSmsTemplates()">
+              {{ savingSmsTemplates() ? 'Enregistrement...' : 'Enregistrer les modèles' }}
+            </button>
+            <button type="button" class="btn-subtle-border" (click)="resetSmsTemplates()">
+              Réinitialiser par défaut
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</main>

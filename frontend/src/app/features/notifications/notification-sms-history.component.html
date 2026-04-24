@@ -1,0 +1,94 @@
+<main class="sms-page">
+  <header class="topbar">
+    <a routerLink="/dashboard" class="nav-link">Retour</a>
+    <div class="topbar-actions">
+      <a routerLink="/rendez-vous" class="nav-link">Rendez-vous</a>
+      <a routerLink="/mon-compte" class="nav-link">Mon compte</a>
+    </div>
+  </header>
+
+  <section class="page-title">
+    <p>Communication</p>
+    <h1>Historique des messages</h1>
+  </section>
+
+  <section class="toolbar">
+    <div class="filters" role="group" aria-label="Filtrer les messages">
+      <button type="button" [class.active]="statusFilter() === 'TOUS'" (click)="setStatusFilter('TOUS')">Tous</button>
+      <button type="button" [class.active]="statusFilter() === 'A_ENVOYER'" (click)="setStatusFilter('A_ENVOYER')">A envoyer</button>
+      <button type="button" [class.active]="statusFilter() === 'ENVOYEE'" (click)="setStatusFilter('ENVOYEE')">Envoyes</button>
+      <button type="button" [class.active]="statusFilter() === 'ECHEC'" (click)="setStatusFilter('ECHEC')">Erreurs</button>
+    </div>
+
+    <button type="button" class="refresh-button" (click)="loadNotifications()" [disabled]="loading()">
+      {{ loading() ? 'Actualisation...' : 'Actualiser' }}
+    </button>
+  </section>
+
+  <p *ngIf="errorMessage()" class="error" role="alert">{{ errorMessage() }}</p>
+
+  <section class="sms-list">
+    <div *ngIf="loading()" class="state">Chargement...</div>
+    <div *ngIf="!loading() && filteredNotifications().length === 0" class="state">Aucun message trouve.</div>
+
+    <article *ngFor="let notification of filteredNotifications(); trackBy: trackByNotificationId" class="sms-card">
+      <div class="sms-card-header">
+        <div class="message-title">
+          <span class="timeline-dot" [class.pending]="notification.statut === 'A_ENVOYER'" [class.failed]="notification.statut === 'ECHEC'"></span>
+          <div>
+            <p class="eyebrow">{{ typeLabel(notification.type) }}</p>
+            <h2>{{ notification.clientNom }}</h2>
+            <p>{{ notification.prestation }} · RDV {{ formatDateTime(notification.dateHeure) }}</p>
+          </div>
+        </div>
+
+        <div class="badges">
+          <span class="status-badge" [class.sent]="notification.statut === 'ENVOYEE'" [class.failed]="notification.statut === 'ECHEC'">
+            {{ statusLabel(notification.statut) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="status-note" [class.pending]="notification.statut === 'A_ENVOYER'" [class.failed]="notification.statut === 'ECHEC'">
+        <i [class]="notification.statut === 'A_ENVOYER' ? 'ph ph-clock' : notification.statut === 'ECHEC' ? 'ph ph-warning-circle' : 'ph ph-check-circle'"></i>
+        <span>{{ statusHint(notification) }}</span>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span>Contact</span>
+          <strong>{{ notification.telephone }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Prévu</span>
+          <strong>{{ formatDateTime(notification.dateEnvoiPrevue) }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Traité</span>
+          <strong>{{ formatDateTime(notification.dateEnvoi) }}</strong>
+        </div>
+      </div>
+
+      <div class="message-preview">
+        <span>Message</span>
+        <p>{{ notification.message }}</p>
+      </div>
+      <p *ngIf="notification.erreur" class="error-detail">{{ notification.erreur }}</p>
+
+      <div class="message-actions">
+        <button type="button" class="action-button whatsapp" (click)="openWhatsApp(notification)">
+          <i class="ph ph-whatsapp-logo"></i>
+          WhatsApp
+        </button>
+        <button type="button" class="action-button instagram" (click)="openInstagram(notification)" [disabled]="!notification.clientInstagram">
+          <i class="ph ph-instagram-logo"></i>
+          Instagram
+        </button>
+        <button type="button" class="action-button" (click)="copyMessage(notification)">
+          <i class="ph ph-copy"></i>
+          Copier
+        </button>
+      </div>
+    </article>
+  </section>
+</main>

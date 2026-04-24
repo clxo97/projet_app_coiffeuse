@@ -1,0 +1,238 @@
+<main class="page-container">
+  <header class="page-header">
+    <div class="header-left">
+      <a routerLink="/dashboard" class="btn-back">
+        <i class="ph ph-arrow-left"></i>
+        <span>Retour</span>
+      </a>
+      <h1>Agenda & Planning</h1>
+    </div>
+    <nav class="header-nav">
+      <a routerLink="/clients" class="nav-item"><i class="ph ph-users"></i> Clients</a>
+      <a routerLink="/mon-compte" class="nav-item"><i class="ph ph-user-circle"></i> Compte</a>
+    </nav>
+  </header>
+
+  <div class="page-content">
+    <aside class="sidebar-form">
+      <div class="card form-card">
+        <div class="card-header">
+          <i class="ph-fill ph-calendar-plus"></i>
+          <h2>{{ editingRendezVous() ? 'Modifier RDV' : 'Nouveau RDV' }}</h2>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="appointment-form">
+          <div class="form-group">
+            <label>Client</label>
+            <div class="client-search-wrapper">
+              <div class="input-with-icon">
+                <i class="ph ph-magnifying-glass"></i>
+                <input
+                  type="search"
+                  [value]="clientSearch()"
+                  (input)="onClientSearch($any($event.target).value)"
+                  (focus)="showClientSuggestions.set(true)"
+                  placeholder="Taper le nom, téléphone ou Instagram..."
+                  autocomplete="off"
+                >
+              </div>
+              <div class="client-suggestions" *ngIf="showClientSuggestions()">
+                <button
+                  type="button"
+                  *ngFor="let client of filteredClients()"
+                  (click)="selectClient(client)"
+                  [class.is-selected]="client.id === form.controls.clientId.value"
+                >
+                  <span>{{ client.nom }}</span>
+                  <small>
+                    {{ client.telephone || 'Téléphone non renseigné' }}
+                    <ng-container *ngIf="client.instagram"> · &#64;{{ client.instagram }}</ng-container>
+                  </small>
+                </button>
+                <p *ngIf="filteredClients().length === 0">Aucun client trouvé.</p>
+              </div>
+            </div>
+            <p *ngIf="hasError('clientId', 'min')" class="error-text">Client obligatoire.</p>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date & Heure</label>
+              <input type="datetime-local" formControlName="dateHeure">
+              <p *ngIf="hasError('dateHeure', 'required')" class="error-text">Obligatoire.</p>
+            </div>
+            <div class="form-group">
+              <label>Durée</label>
+              <div class="select-wrapper">
+                <select formControlName="dureeMinutes">
+                  <option *ngFor="let duration of durations" [ngValue]="duration">
+                    {{ duration }} min
+                  </option>
+                </select>
+                <i class="ph ph-caret-down"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Prestation</label>
+            <input type="text" formControlName="prestation" placeholder="Coupe, brushing, couleur...">
+            <p *ngIf="hasError('prestation', 'required')" class="error-text">Prestation obligatoire.</p>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Prix (€)</label>
+              <input type="number" min="0" step="0.01" formControlName="prix">
+            </div>
+            <div class="form-group">
+              <label>Statut</label>
+              <div class="select-wrapper">
+                <select formControlName="statut">
+                  <option *ngFor="let statut of statuts" [ngValue]="statut">{{ statusLabel(statut) }}</option>
+                </select>
+                <i class="ph ph-caret-down"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Notes (optionnel)</label>
+            <textarea rows="3" formControlName="notes" placeholder="Détails particuliers..."></textarea>
+          </div>
+
+          <div class="form-messages">
+            <p *ngIf="successMessage()" class="msg-success"><i class="ph ph-check-circle"></i> {{ successMessage() }}</p>
+            <p *ngIf="errorMessage()" class="msg-error"><i class="ph ph-warning-circle"></i> {{ errorMessage() }}</p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="saving() || form.invalid">
+              {{ saving() ? 'Enregistrement...' : editingRendezVous() ? 'Enregistrer' : 'Ajouter RDV' }}
+            </button>
+            <button *ngIf="editingRendezVous()" type="button" class="btn-secondary" (click)="cancelEdit()">
+              Annuler
+            </button>
+          </div>
+        </form>
+      </div>
+    </aside>
+
+    <section class="main-planning">
+      <div class="planning-toolbar">
+        <div class="date-navigator">
+          <button (click)="previousDay()" class="btn-icon"><i class="ph ph-caret-left"></i></button>
+          <div class="current-date">
+            <i class="ph ph-calendar-blank"></i>
+            <span>{{ selectedDateLabel() }}</span>
+          </div>
+          <button (click)="nextDay()" class="btn-icon"><i class="ph ph-caret-right"></i></button>
+        </div>
+
+        <div class="planning-filters">
+          <form [formGroup]="filterForm" (ngSubmit)="loadRendezVous()" class="filter-form">
+            <input type="date" formControlName="date">
+            <button type="submit" class="btn-filter">Filtrer</button>
+          </form>
+          <button (click)="setToday()" class="btn-subtle">Aujourd'hui</button>
+          <button (click)="clearDateFilter()" class="btn-subtle">Tout voir</button>
+        </div>
+      </div>
+
+      <div class="planning-summary">
+        <div class="summary-item">
+          <span class="label">Rendez-vous</span>
+          <span class="value">{{ rendezVous().length }}</span>
+        </div>
+        <div class="summary-item highlight">
+          <span class="label">Total terminés</span>
+          <span class="value">{{ totalTermine() | number:'1.2-2' }} €</span>
+        </div>
+      </div>
+
+      <div class="agenda-view">
+        <div *ngIf="loading()" class="state-loading">
+          <i class="ph ph-circle-notch"></i>
+          <p>Chargement de l'agenda...</p>
+        </div>
+        
+        <div *ngIf="!loading() && rendezVous().length === 0" class="state-empty">
+          <i class="ph ph-calendar-x"></i>
+          <p>Aucun rendez-vous pour cette période.</p>
+        </div>
+
+        <div class="agenda-timeline" *ngIf="!loading() && rendezVous().length > 0">
+          <article
+            *ngFor="let item of rendezVous(); trackBy: trackByAppointmentId"
+            class="agenda-row"
+            [class.is-done]="item.statut === 'TERMINE'"
+            [class.is-cancelled]="item.statut === 'ANNULE'"
+          >
+            <div class="time-col">
+              <span class="time-badge">{{ formatTime(item.dateHeure) }}</span>
+            </div>
+
+            <div class="card agenda-card">
+              <div class="apt-header">
+                <div class="client-info">
+                  <h3>{{ item.clientNom }}</h3>
+                  <p><i class="ph ph-phone"></i> {{ item.clientTelephone || 'Non renseigné' }}</p>
+                  <p *ngIf="item.clientInstagram"><i class="ph ph-instagram-logo"></i> &#64;{{ item.clientInstagram }}</p>
+                </div>
+                <div class="apt-badges">
+                  <span class="badge-status" [attr.data-status]="item.statut">
+                    {{ statusLabel(item.statut) }}
+                  </span>
+                  <span class="badge-reminder" [class.is-sent]="item.rappelEnvoye">
+                    <i [class]="item.rappelEnvoye ? 'ph ph-paper-plane-tilt' : 'ph ph-clock'"></i>
+                    {{ item.rappelEnvoye ? 'Rappel envoyé' : 'Rappel à envoyer' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="apt-details">
+                <div class="detail-group">
+                  <span class="detail-label">Prestation</span>
+                  <span class="detail-value">{{ item.prestation }}</span>
+                </div>
+                <div class="detail-group">
+                  <span class="detail-label">Détails</span>
+                  <span class="detail-value">{{ item.dureeMinutes || 60 }} min · {{ item.prix | number:'1.2-2' }} €</span>
+                </div>
+              </div>
+
+              <div *ngIf="item.notes" class="apt-notes">
+                <i class="ph ph-note"></i>
+                <p>{{ item.notes }}</p>
+              </div>
+
+              <div class="apt-actions">
+                <div class="quick-actions">
+                  <button (click)="openWhatsAppReminder(item)" title="WhatsApp">
+                    <i class="ph ph-whatsapp-logo"></i>
+                  </button>
+                  <button (click)="openInstagram(item)" [disabled]="!item.clientInstagram" title="Instagram">
+                    <i class="ph ph-instagram-logo"></i>
+                  </button>
+                  <button (click)="copyReminder(item)" title="Copier">
+                    <i class="ph ph-copy"></i>
+                  </button>
+                  <button (click)="markReminderSent(item)" [disabled]="item.rappelEnvoye" title="Marquer envoyé">
+                    <i class="ph ph-check"></i>
+                  </button>
+                  <button (click)="addToCalendar(item)" title="Calendrier">
+                    <i class="ph ph-calendar-plus"></i>
+                  </button>
+                </div>
+                <div class="main-actions">
+                  <button (click)="edit(item)" class="btn-edit">Modifier</button>
+                  <button (click)="delete(item)" class="btn-delete">Supprimer</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>

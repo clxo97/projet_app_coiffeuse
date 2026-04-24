@@ -1,0 +1,158 @@
+<main class="page-container">
+  <header class="page-header">
+    <div class="header-left">
+      <a routerLink="/dashboard" class="btn-back">
+        <i class="ph ph-arrow-left"></i>
+        <span>Retour</span>
+      </a>
+      <h1>Gestion des Clients</h1>
+    </div>
+    <nav class="header-nav">
+      <a routerLink="/rendez-vous" class="nav-item"><i class="ph ph-calendar"></i> Agenda</a>
+      <a routerLink="/mon-compte" class="nav-item"><i class="ph ph-user-circle"></i> Compte</a>
+    </nav>
+  </header>
+
+  <div class="page-content">
+    <aside class="sidebar-form">
+      <div class="card form-card">
+        <div class="card-header">
+          <i class="ph-fill ph-user-plus"></i>
+          <h2>{{ editingClient() ? 'Modifier Client' : 'Nouveau Client' }}</h2>
+        </div>
+
+        <form [formGroup]="clientForm" (ngSubmit)="submit()" class="client-form">
+          <div class="form-group">
+            <label>Nom complet</label>
+            <div class="input-with-icon">
+              <i class="ph ph-user"></i>
+              <input type="text" formControlName="nom" autocomplete="name" placeholder="Mme. Julie Martin">
+            </div>
+            <p *ngIf="hasError('nom', 'required')" class="error-text">Le nom est obligatoire.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Téléphone</label>
+            <div class="input-with-icon">
+              <i class="ph ph-phone"></i>
+              <input type="tel" formControlName="telephone" autocomplete="tel" placeholder="06 12 34 56 78">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <div class="input-with-icon">
+              <i class="ph ph-envelope"></i>
+              <input type="email" formControlName="email" autocomplete="email" placeholder="julie@exemple.com">
+            </div>
+            <p *ngIf="hasError('email', 'email')" class="error-text">Format d'email invalide.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Instagram</label>
+            <div class="input-with-icon">
+              <i class="ph ph-instagram-logo"></i>
+              <input type="text" formControlName="instagram" placeholder="@julie_martin">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Notes & Préférences</label>
+            <textarea rows="4" formControlName="notes" placeholder="Allergies, préférences de coupe, habitudes..."></textarea>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="custom-checkbox">
+              <input type="checkbox" formControlName="smsActif">
+              <span class="checkmark"></span>
+              Messages de rappel actifs
+            </label>
+          </div>
+
+          <div class="form-messages">
+            <p *ngIf="successMessage()" class="msg-success"><i class="ph ph-check-circle"></i> {{ successMessage() }}</p>
+            <p *ngIf="errorMessage()" class="msg-error"><i class="ph ph-warning-circle"></i> {{ errorMessage() }}</p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="saving() || clientForm.invalid">
+              {{ saving() ? 'Enregistrement...' : editingClient() ? 'Enregistrer' : 'Ajouter Client' }}
+            </button>
+            <button *ngIf="editingClient()" type="button" class="btn-secondary" (click)="cancelEdit()">
+              Annuler
+            </button>
+          </div>
+        </form>
+      </div>
+    </aside>
+
+    <section class="main-list">
+      <div class="list-toolbar">
+        <form [formGroup]="searchForm" (ngSubmit)="loadClients()" class="search-form-full">
+          <div class="search-wrapper">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="search" formControlName="recherche" placeholder="Rechercher par nom, téléphone ou email...">
+          </div>
+          <button type="submit" class="btn-search">Rechercher</button>
+        </form>
+      </div>
+
+      <div class="clients-grid">
+        <div *ngIf="loading()" class="state-loading">
+          <i class="ph ph-circle-notch"></i>
+          <p>Chargement des clients...</p>
+        </div>
+        
+        <div *ngIf="!loading() && clients().length === 0" class="state-empty">
+          <i class="ph ph-users-four"></i>
+          <p>Aucun client trouvé.</p>
+        </div>
+
+        <div class="clients-cards-container" *ngIf="!loading() && clients().length > 0">
+          <article *ngFor="let client of clients()" class="card client-card-item">
+            <div class="client-header">
+              <div class="client-avatar">
+                {{ client.nom.charAt(0).toUpperCase() }}
+              </div>
+              <div class="client-title">
+                <h3>{{ client.nom }}</h3>
+                <span class="sms-status-pill" [class.is-active]="client.smsActif">
+                  <i [class]="client.smsActif ? 'ph-fill ph-chat-circle-dots' : 'ph ph-chat-circle-slash'"></i>
+                  {{ client.smsActif ? 'Rappels actifs' : 'Rappels désactivés' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="client-contact">
+              <div class="contact-item">
+                <i class="ph ph-phone"></i>
+                <span>{{ client.telephone || 'Non renseigné' }}</span>
+              </div>
+              <div class="contact-item">
+                <i class="ph ph-envelope"></i>
+                <span>{{ client.email || 'Non renseigné' }}</span>
+              </div>
+              <div class="contact-item">
+                <i class="ph ph-instagram-logo"></i>
+                <span>{{ client.instagram ? '@' + client.instagram : 'Non renseigné' }}</span>
+              </div>
+            </div>
+
+            <div *ngIf="client.notes" class="client-notes">
+              <p>{{ client.notes }}</p>
+            </div>
+
+            <div class="client-actions">
+              <button (click)="edit(client)" class="btn-edit-small">
+                <i class="ph ph-pencil-simple"></i> Modifier
+              </button>
+              <button (click)="delete(client)" class="btn-delete-small">
+                <i class="ph ph-trash"></i>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>

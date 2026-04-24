@@ -1,0 +1,69 @@
+<main class="login-page">
+  <div class="background-decor">
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+  </div>
+
+  <section class="login-card">
+    <header class="brand-header">
+      <div class="logo">
+        <i class="ph-fill ph-scissors"></i>
+      </div>
+      <p class="brand-eyebrow">Espace Professionnel</p>
+      <h1>Salon Coiffure</h1>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+      <div class="input-group">
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+          <i class="ph ph-envelope-simple"></i>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="username"
+            placeholder="votre@email.com"
+            [class.invalid]="hasError('email', 'required') || hasError('email', 'email')"
+          >
+        </div>
+        <p *ngIf="hasError('email', 'required')" class="field-error">L'email est requis.</p>
+        <p *ngIf="hasError('email', 'email')" class="field-error">Format d'email invalide.</p>
+      </div>
+
+      <div class="input-group">
+        <label for="motDePasse">Mot de passe</label>
+        <div class="input-wrapper">
+          <i class="ph ph-lock-simple"></i>
+          <input
+            id="motDePasse"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="motDePasse"
+            autocomplete="current-password"
+            [class.invalid]="hasError('motDePasse', 'required') || hasError('motDePasse', 'minlength')"
+          >
+          <button
+            type="button"
+            class="toggle-visibility"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Masquer' : 'Afficher'"
+          >
+            <i [class]="showPassword() ? 'ph ph-eye-closed' : 'ph ph-eye'"></i>
+          </button>
+        </div>
+        <p *ngIf="hasError('motDePasse', 'required')" class="field-error">Le mot de passe est requis.</p>
+        <p *ngIf="hasError('motDePasse', 'minlength')" class="field-error">Minimum 8 caractères.</p>
+      </div>
+
+      <div *ngIf="errorMessage()" class="alert-error" role="alert">
+        <i class="ph ph-warning-circle"></i>
+        <span>{{ errorMessage() }}</span>
+      </div>
+
+      <button class="btn-login" type="submit" [disabled]="loading() || form.invalid">
+        {{ loading() ? 'Connexion en cours...' : 'Se connecter' }}
+        <i *ngIf="!loading()" class="ph ph-arrow-right"></i>
+      </button>
+    </form>
+  </section>
+</main>
