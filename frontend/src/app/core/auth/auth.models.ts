@@ -11,6 +11,7 @@ export interface LoginResponse {
   coiffeuseId: number;
   nom: string;
   email: string;
+  admin: boolean;
   subscriptionStatus: SubscriptionStatus;
   abonnementActifJusquAu: string | null;
   abonnementActif: boolean;

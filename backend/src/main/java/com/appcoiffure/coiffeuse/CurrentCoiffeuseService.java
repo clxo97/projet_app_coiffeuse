@@ -2,6 +2,7 @@ package com.appcoiffure.coiffeuse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -10,9 +11,14 @@ import org.springframework.web.server.ResponseStatusException;
 public class CurrentCoiffeuseService {
 
     private final CoiffeuseRepository coiffeuseRepository;
+    private final String adminEmail;
 
-    public CurrentCoiffeuseService(CoiffeuseRepository coiffeuseRepository) {
+    public CurrentCoiffeuseService(
+            CoiffeuseRepository coiffeuseRepository,
+            @Value("${app.admin.email}") String adminEmail
+    ) {
         this.coiffeuseRepository = coiffeuseRepository;
+        this.adminEmail = normalizeEmail(adminEmail);
     }
 
     public Coiffeuse requireCurrent(HttpServletRequest request) {
@@ -34,5 +40,23 @@ public class CurrentCoiffeuseService {
         }
 
         return coiffeuse;
+    }
+
+    public Coiffeuse requireAdmin(HttpServletRequest request) {
+        Coiffeuse coiffeuse = requireCurrent(request);
+
+        if (!isAdmin(coiffeuse)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acces administrateur requis");
+        }
+
+        return coiffeuse;
+    }
+
+    public boolean isAdmin(Coiffeuse coiffeuse) {
+        return normalizeEmail(coiffeuse.getEmail()).equals(adminEmail);
+    }
+
+    private String normalizeEmail(String email) {
+        return email == null ? "" : email.trim().toLowerCase();
     }
 }

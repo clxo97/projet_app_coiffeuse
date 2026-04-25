@@ -47,6 +47,10 @@ export class AuthService {
     return Boolean(this.getToken());
   }
 
+  isAdmin(): boolean {
+    return this.currentUser()?.admin === true;
+  }
+
   private readUser(): LoginResponse | null {
     const rawUser = localStorage.getItem(USER_KEY);
     return rawUser ? (JSON.parse(rawUser) as LoginResponse) : null;

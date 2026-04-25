@@ -8,6 +8,7 @@ import com.appcoiffure.coiffeuse.Coiffeuse;
 import com.appcoiffure.coiffeuse.CoiffeuseRepository;
 import com.appcoiffure.coiffeuse.SubscriptionStatus;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,15 +23,18 @@ public class AuthController {
     private final CoiffeuseRepository coiffeuseRepository;
     private final PasswordService passwordService;
     private final JwtService jwtService;
+    private final String adminEmail;
 
     public AuthController(
             CoiffeuseRepository coiffeuseRepository,
             PasswordService passwordService,
-            JwtService jwtService
+            JwtService jwtService,
+            @Value("${app.admin.email}") String adminEmail
     ) {
         this.coiffeuseRepository = coiffeuseRepository;
         this.passwordService = passwordService;
         this.jwtService = jwtService;
+        this.adminEmail = normalizeEmail(adminEmail);
     }
 
     @PostMapping("/login")
@@ -55,6 +59,7 @@ public class AuthController {
                 coiffeuse.getId(),
                 coiffeuse.getNom(),
                 coiffeuse.getEmail(),
+                isAdmin(coiffeuse),
                 coiffeuse.getSubscriptionStatus(),
                 coiffeuse.getAbonnementActifJusquAu(),
                 coiffeuse.hasActiveSubscription()
@@ -94,6 +99,7 @@ public class AuthController {
                 saved.getId(),
                 saved.getNom(),
                 saved.getEmail(),
+                isAdmin(saved),
                 saved.getSubscriptionStatus(),
                 saved.getAbonnementActifJusquAu(),
                 saved.hasActiveSubscription()
@@ -110,5 +116,13 @@ public class AuthController {
         }
 
         return value.trim();
+    }
+
+    private boolean isAdmin(Coiffeuse coiffeuse) {
+        return normalizeEmail(coiffeuse.getEmail()).equals(adminEmail);
+    }
+
+    private String normalizeEmail(String email) {
+        return email == null ? "" : email.trim().toLowerCase();
     }
 }

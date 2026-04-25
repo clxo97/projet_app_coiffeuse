@@ -39,6 +39,10 @@ import { RendezVous } from '../../core/rendezvous/rendezvous.models';
             <i class="ph ph-user-circle"></i>
             <span>Compte</span>
           </a>
+          <a *ngIf="authService.isAdmin()" routerLink="/admin/abonnements" class="nav-link">
+            <i class="ph ph-shield-star"></i>
+            <span>Admin</span>
+          </a>
           <button type="button" (click)="logout()" class="btn-logout">
             <i class="ph ph-sign-out"></i>
             <span>Quitter</span>

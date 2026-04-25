@@ -144,6 +144,10 @@ export class AccountComponent implements OnInit {
   readonly defaultModificationTemplate = 'Votre rendez-vous coiffure a ete modifie le {date}. Prestation : {prestation}. Duree : {duree} min. A bientot.';
   readonly defaultReminderTemplate = 'Rappel : votre rendez-vous coiffure est prevu le {date}. Prestation : {prestation}. Duree : {duree} min. A bientot.';
 
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
   subscriptionHeadline(account: CoiffeuseAccount): string {
     if (account.subscriptionStatus === 'TRIAL') {
       return 'Essai gratuit 7 jours';

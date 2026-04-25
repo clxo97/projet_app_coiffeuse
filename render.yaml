@@ -29,6 +29,8 @@ services:
         value: admin@example.com
       - key: APP_COIFFEUSE_PASSWORD
         sync: false
+      - key: APP_ADMIN_EMAIL
+        value: admin@example.com
       - key: SMS_PROVIDER
         value: console
   - type: web

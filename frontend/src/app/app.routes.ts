@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
-import { authGuard } from './core/auth/auth.guard';
+import { adminGuard, authGuard } from './core/auth/auth.guard';
+import { AdminSubscriptionsComponent } from './features/admin/admin-subscriptions.component';
 import { AccountComponent } from './features/account/account.component';
 import { ClientsComponent } from './features/clients/clients.component';
 import { FinanceComponent } from './features/finance/finance.component';
@@ -13,6 +14,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'mon-compte', component: AccountComponent, canActivate: [authGuard] },
+  { path: 'admin/abonnements', component: AdminSubscriptionsComponent, canActivate: [adminGuard] },
   { path: 'clients', component: ClientsComponent, canActivate: [authGuard] },
   { path: 'rendez-vous', component: RendezVousComponent, canActivate: [authGuard] },
   { path: 'finance', component: FinanceComponent, canActivate: [authGuard] },

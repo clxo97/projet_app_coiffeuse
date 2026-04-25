@@ -5,6 +5,7 @@ export interface CoiffeuseAccount {
   nom: string;
   nomSalon: string | null;
   email: string;
+  admin: boolean;
   subscriptionStatus: SubscriptionStatus;
   abonnementActifJusquAu: string | null;
   abonnementActif: boolean;

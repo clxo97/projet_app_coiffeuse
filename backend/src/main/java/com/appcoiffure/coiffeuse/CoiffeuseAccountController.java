@@ -43,7 +43,8 @@ public class CoiffeuseAccountController {
 
     @GetMapping("/me")
     public ResponseEntity<CoiffeuseResponse> me(HttpServletRequest request) {
-        return ResponseEntity.ok(CoiffeuseResponse.from(currentCoiffeuseService.requireCurrent(request)));
+        Coiffeuse coiffeuse = currentCoiffeuseService.requireCurrent(request);
+        return ResponseEntity.ok(CoiffeuseResponse.from(coiffeuse, currentCoiffeuseService.isAdmin(coiffeuse)));
     }
 
     @GetMapping("/me/sms-config")
@@ -90,7 +91,7 @@ public class CoiffeuseAccountController {
                 cleanTemplate(body.modeleSmsRappel())
         );
 
-        return ResponseEntity.ok(CoiffeuseResponse.from(coiffeuse));
+        return ResponseEntity.ok(CoiffeuseResponse.from(coiffeuse, currentCoiffeuseService.isAdmin(coiffeuse)));
     }
 
     private String cleanTemplate(String value) {

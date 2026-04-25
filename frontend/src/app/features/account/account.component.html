@@ -8,6 +8,7 @@
       <h1>Mon Profil & Paramètres</h1>
     </div>
     <nav class="header-nav">
+      <a *ngIf="isAdmin()" routerLink="/admin/abonnements" class="nav-item"><i class="ph ph-shield-star"></i> Administration</a>
       <a routerLink="/notifications-sms" class="nav-item"><i class="ph ph-chat-circle-dots"></i> Historique messages</a>
       <button (click)="logout()" class="btn-logout-header"><i class="ph ph-sign-out"></i> Déconnexion</button>
     </nav>

@@ -1,33 +1,30 @@
-package com.appcoiffure.coiffeuse;
+package com.appcoiffure.admin;
 
 import java.time.Instant;
 
-public record CoiffeuseResponse(
+import com.appcoiffure.coiffeuse.Coiffeuse;
+import com.appcoiffure.coiffeuse.SubscriptionStatus;
+
+public record AdminCoiffeuseResponse(
         Long id,
         String nom,
         String nomSalon,
         String email,
-        boolean admin,
         SubscriptionStatus subscriptionStatus,
         Instant abonnementActifJusquAu,
         boolean abonnementActif,
-        String modeleSmsConfirmation,
-        String modeleSmsModification,
-        String modeleSmsRappel
+        Instant creeLe
 ) {
-    public static CoiffeuseResponse from(Coiffeuse coiffeuse, boolean admin) {
-        return new CoiffeuseResponse(
+    public static AdminCoiffeuseResponse from(Coiffeuse coiffeuse) {
+        return new AdminCoiffeuseResponse(
                 coiffeuse.getId(),
                 coiffeuse.getNom(),
                 coiffeuse.getNomSalon(),
                 coiffeuse.getEmail(),
-                admin,
                 coiffeuse.getSubscriptionStatus(),
                 coiffeuse.getAbonnementActifJusquAu(),
                 coiffeuse.hasActiveSubscription(),
-                coiffeuse.getModeleSmsConfirmation(),
-                coiffeuse.getModeleSmsModification(),
-                coiffeuse.getModeleSmsRappel()
+                coiffeuse.getCreeLe()
         );
     }
 }

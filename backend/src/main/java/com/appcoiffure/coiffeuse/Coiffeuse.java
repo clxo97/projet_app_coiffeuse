@@ -176,6 +176,16 @@ public class Coiffeuse {
         this.subscriptionStatus = subscriptionStatus;
     }
 
+    public void mettreAJourAbonnement(SubscriptionStatus subscriptionStatus, Instant abonnementActifJusquAu) {
+        this.subscriptionStatus = subscriptionStatus;
+        this.abonnementActifJusquAu = abonnementActifJusquAu;
+
+        if (subscriptionStatus != SubscriptionStatus.ACTIVE) {
+            this.stripeCustomerId = null;
+            this.stripeSubscriptionId = null;
+        }
+    }
+
     public void modifierModelesSms(
             String modeleSmsConfirmation,
             String modeleSmsModification,

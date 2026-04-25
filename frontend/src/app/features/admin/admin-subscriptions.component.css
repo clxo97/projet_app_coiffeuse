@@ -1,0 +1,180 @@
+.page-container {
+  padding: 2rem;
+}
+
+.page-header,
+.header-left,
+.card-top,
+.form-actions,
+.card-actions {
+  display: flex;
+  align-items: center;
+}
+
+.page-header,
+.card-top {
+  justify-content: space-between;
+}
+
+.header-left {
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a6b52;
+}
+
+.btn-back,
+.btn-primary,
+.btn-subtle-border {
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  background: #f3ece1;
+  color: #3c3125;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #eadfce;
+  border-radius: 24px;
+  padding: 1.25rem;
+  box-shadow: 0 18px 50px rgba(63, 42, 17, 0.08);
+}
+
+.intro-card,
+.loading-card,
+.msg-success,
+.msg-error {
+  margin-top: 1rem;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.coiffeuse-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.card-top h2,
+.card-top p,
+.card-meta p {
+  margin: 0;
+}
+
+.card-top p,
+.card-meta {
+  color: #665846;
+}
+
+.card-meta {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.status-badge {
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: #f6ead7;
+  color: #7b5d29;
+  font-weight: 600;
+}
+
+.status-badge.is-active {
+  background: #dff5e8;
+  color: #1f6a46;
+}
+
+.edit-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.edit-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: #3c3125;
+}
+
+.edit-form input,
+.edit-form select {
+  width: 100%;
+  padding: 0.8rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid #d9c9b5;
+  background: #fffdf9;
+}
+
+.form-actions,
+.card-actions {
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-subtle-border {
+  border: 0;
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: #2f7d5c;
+  color: #fff;
+}
+
+.btn-subtle-border {
+  background: #fff;
+  border: 1px solid #d9c9b5;
+  color: #3c3125;
+}
+
+.msg-success,
+.msg-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+}
+
+.msg-success {
+  background: #e3f6eb;
+  color: #1f6a46;
+}
+
+.msg-error {
+  background: #fdeaea;
+  color: #a33b3b;
+}
+
+@media (max-width: 720px) {
+  .page-container {
+    padding: 1rem;
+  }
+
+  .page-header,
+  .header-left,
+  .card-top {
+    display: grid;
+    gap: 0.75rem;
+  }
+}

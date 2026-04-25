@@ -10,6 +10,7 @@ public record LoginResponse(
         Long coiffeuseId,
         String nom,
         String email,
+        boolean admin,
         SubscriptionStatus subscriptionStatus,
         Instant abonnementActifJusquAu,
         boolean abonnementActif

@@ -1,0 +1,75 @@
+<main class="page-container">
+  <header class="page-header">
+    <div class="header-left">
+      <a routerLink="/dashboard" class="btn-back">
+        <i class="ph ph-arrow-left"></i>
+        <span>Retour</span>
+      </a>
+      <div>
+        <p class="eyebrow">Administration privee</p>
+        <h1>Gestion des abonnements</h1>
+      </div>
+    </div>
+  </header>
+
+  <section class="card intro-card">
+    <p>
+      Cet ecran n est visible que par le compte administrateur. Tu peux y activer, prolonger ou couper l acces d une
+      coiffeuse sans modifier directement la base.
+    </p>
+  </section>
+
+  <p *ngIf="successMessage()" class="msg-success"><i class="ph ph-check-circle"></i> {{ successMessage() }}</p>
+  <p *ngIf="errorMessage()" class="msg-error"><i class="ph ph-warning-circle"></i> {{ errorMessage() }}</p>
+
+  <section class="cards-grid" *ngIf="!loading(); else loadingState">
+    <article class="card coiffeuse-card" *ngFor="let coiffeuse of coiffeuses()">
+      <div class="card-top">
+        <div>
+          <h2>{{ coiffeuse.nom }}</h2>
+          <p *ngIf="coiffeuse.nomSalon">{{ coiffeuse.nomSalon }}</p>
+          <p>{{ coiffeuse.email }}</p>
+        </div>
+        <span class="status-badge" [class.is-active]="coiffeuse.abonnementActif">{{ subscriptionLabel(coiffeuse.subscriptionStatus) }}</span>
+      </div>
+
+      <div class="card-meta">
+        <p><strong>Valable jusqu au :</strong> {{ formatDate(coiffeuse.abonnementActifJusquAu) }}</p>
+        <p><strong>Compte cree :</strong> {{ formatDate(coiffeuse.creeLe) }}</p>
+      </div>
+
+      <form *ngIf="editingId() === coiffeuse.id; else actionsBlock" [formGroup]="form" class="edit-form" (ngSubmit)="save(coiffeuse)">
+        <label>
+          Statut
+          <select formControlName="subscriptionStatus">
+            <option *ngFor="let status of statuses" [value]="status.value">{{ status.label }}</option>
+          </select>
+        </label>
+
+        <label>
+          Date de validite
+          <input type="datetime-local" formControlName="abonnementActifJusquAu">
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="savingId() === coiffeuse.id">
+            {{ savingId() === coiffeuse.id ? 'Enregistrement...' : 'Enregistrer' }}
+          </button>
+          <button type="button" class="btn-subtle-border" (click)="cancelEdit()">Annuler</button>
+        </div>
+      </form>
+
+      <ng-template #actionsBlock>
+        <div class="card-actions">
+          <button type="button" class="btn-primary" (click)="startEdit(coiffeuse)">Modifier l abonnement</button>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+
+  <ng-template #loadingState>
+    <section class="card loading-card">
+      Chargement des comptes...
+    </section>
+  </ng-template>
+</main>
