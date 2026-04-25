@@ -37,7 +37,7 @@
             <p class="subscription-eyebrow">Abonnement</p>
             <h2>{{ currentAccount.abonnementActif ? 'Acces actif' : 'Acces limite' }}</h2>
             <p>
-              Statut : <strong>{{ currentAccount.subscriptionStatus }}</strong>
+              Statut : <strong>{{ subscriptionLabel(currentAccount.subscriptionStatus) }}</strong>
               <ng-container *ngIf="currentAccount.abonnementActifJusquAu">
                 · valable jusqu'au {{ currentAccount.abonnementActifJusquAu | date:'mediumDate':'':'fr' }}
               </ng-container>
@@ -45,21 +45,9 @@
           </div>
         </div>
         <p class="subscription-note">
-          Cette version est prete pour un abonnement mensuel. Branche ensuite Stripe Checkout + webhook pour activer
-          automatiquement les comptes apres paiement.
+          Votre acces a la plateforme depend de votre abonnement mensuel. En cas d'expiration, contactez
+          l'administrateur pour reactivation.
         </p>
-      </section>
-
-      <section class="card sms-mode-card" *ngIf="smsConfig() as config">
-        <div class="sms-mode-icon" [class.is-twilio]="config.provider === 'twilio' && config.twilioConfigured">
-          <i [class]="config.provider === 'twilio' && config.twilioConfigured ? 'ph-fill ph-paper-plane-tilt' : 'ph ph-terminal-window'"></i>
-        </div>
-        <div>
-          <p class="sms-mode-eyebrow">Configuration messages</p>
-          <h2>{{ config.modeLabel }}</h2>
-          <p>{{ config.description }}</p>
-          <span *ngIf="config.from" class="sms-mode-from">Numéro expéditeur : {{ config.from }}</span>
-        </div>
       </section>
 
       <section class="card password-card">

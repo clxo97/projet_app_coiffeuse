@@ -144,6 +144,21 @@ export class AccountComponent implements OnInit {
   readonly defaultModificationTemplate = 'Votre rendez-vous coiffure a ete modifie le {date}. Prestation : {prestation}. Duree : {duree} min. A bientot.';
   readonly defaultReminderTemplate = 'Rappel : votre rendez-vous coiffure est prevu le {date}. Prestation : {prestation}. Duree : {duree} min. A bientot.';
 
+  subscriptionLabel(status: CoiffeuseAccount['subscriptionStatus']): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Abonnement actif';
+      case 'TRIAL':
+        return 'Periode d essai';
+      case 'PAST_DUE':
+        return 'Paiement en attente';
+      case 'CANCELED':
+        return 'Abonnement inactif';
+      default:
+        return status;
+    }
+  }
+
   passwordsMatch(): boolean {
     const value = this.form.getRawValue();
     return value.nouveauMotDePasse === value.confirmationMotDePasse;

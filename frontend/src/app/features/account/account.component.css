@@ -135,13 +135,6 @@ h1 {
   font-weight: 500;
 }
 
-.sms-mode-card {
-  padding: 24px;
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-}
-
 .subscription-card {
   padding: 24px;
   border-left: 6px solid #f59e0b;
@@ -196,56 +189,6 @@ h1 {
 
 .subscription-note {
   margin-top: 14px;
-}
-
-.sms-mode-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
-  background: #f3f4f6;
-  color: #4b5563;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  flex: 0 0 auto;
-}
-
-.sms-mode-icon.is-twilio {
-  background: #dcfce7;
-  color: #16a34a;
-}
-
-.sms-mode-eyebrow {
-  margin: 0 0 4px;
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.sms-mode-card h2 {
-  margin: 0 0 8px;
-  font-size: 1.15rem;
-  color: var(--primary-dark);
-}
-
-.sms-mode-card p:not(.sms-mode-eyebrow) {
-  margin: 0;
-  color: var(--text-muted);
-  line-height: 1.45;
-}
-
-.sms-mode-from {
-  display: inline-flex;
-  margin-top: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  font-weight: 700;
-  font-size: 0.82rem;
 }
 
 .card-header {
