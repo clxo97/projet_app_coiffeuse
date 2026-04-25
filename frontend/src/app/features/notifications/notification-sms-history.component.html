@@ -1,16 +1,20 @@
 <main class="sms-page">
   <header class="topbar">
-    <a routerLink="/dashboard" class="nav-link">Retour</a>
+    <div class="topbar-main">
+      <a routerLink="/dashboard" class="nav-link back-link">
+        <i class="ph ph-arrow-left"></i>
+        <span>Retour</span>
+      </a>
+      <div class="page-title">
+        <p>Communication</p>
+        <h1>Historique des messages</h1>
+      </div>
+    </div>
     <div class="topbar-actions">
-      <a routerLink="/rendez-vous" class="nav-link">Rendez-vous</a>
-      <a routerLink="/mon-compte" class="nav-link">Mon compte</a>
+      <a routerLink="/rendez-vous" class="nav-link"><i class="ph ph-calendar"></i> Rendez-vous</a>
+      <a routerLink="/mon-compte" class="nav-link"><i class="ph ph-user-circle"></i> Mon compte</a>
     </div>
   </header>
-
-  <section class="page-title">
-    <p>Communication</p>
-    <h1>Historique des messages</h1>
-  </section>
 
   <section class="toolbar">
     <div class="filters" role="group" aria-label="Filtrer les messages">
@@ -25,7 +29,7 @@
     </button>
   </section>
 
-  <p *ngIf="errorMessage()" class="error" role="alert">{{ errorMessage() }}</p>
+  <p *ngIf="errorMessage()" class="error" role="alert"><i class="ph ph-warning-circle"></i> {{ errorMessage() }}</p>
 
   <section class="sms-list">
     <div *ngIf="loading()" class="state">Chargement...</div>

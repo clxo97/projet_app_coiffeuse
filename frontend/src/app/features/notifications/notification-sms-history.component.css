@@ -1,12 +1,14 @@
 .sms-page {
   min-height: 100vh;
   padding: 28px;
-  background: #f8fafc;
-  color: #0f172a;
+  background:
+    radial-gradient(circle at top right, rgba(222, 184, 135, 0.22), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(194, 137, 95, 0.18), transparent 30%),
+    linear-gradient(180deg, #f8f3ea 0%, #fdfaf5 100%);
+  color: #3c3125;
 }
 
 .topbar,
-.page-title,
 .toolbar,
 .sms-list {
   width: min(100%, 1120px);
@@ -14,6 +16,7 @@
 }
 
 .topbar,
+.topbar-main,
 .topbar-actions,
 .toolbar,
 .filters,
@@ -26,7 +29,8 @@
 
 .topbar {
   justify-content: space-between;
-  margin-bottom: 28px;
+  align-items: flex-start;
+  margin-bottom: 22px;
 }
 
 .nav-link,
@@ -36,41 +40,51 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  padding: 0 14px;
-  background: #ffffff;
-  color: #0f172a;
+  gap: 8px;
+  border: 1px solid #d9c9b5;
+  border-radius: 999px;
+  padding: 0 16px;
+  background: rgba(255, 253, 249, 0.92);
+  color: #3c3125;
   font: inherit;
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: 0 10px 28px rgba(63, 42, 17, 0.08);
 }
 
-.page-title {
-  margin-bottom: 22px;
+.back-link {
+  flex: 0 0 auto;
 }
 
 .page-title p {
   margin: 0 0 6px;
-  color: #0f766e;
+  color: #7a6b52;
+  font-size: 0.82rem;
   font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .page-title h1 {
   margin: 0;
   font-size: 2rem;
+  color: #2f2418;
 }
 
 .toolbar {
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border: 1px solid #eadfce;
+  border-radius: 24px;
+  background: rgba(255, 252, 247, 0.9);
+  box-shadow: 0 18px 50px rgba(63, 42, 17, 0.08);
 }
 
 .filters button.active {
-  border-color: #0f766e;
-  background: #0f766e;
+  border-color: #2f7d5c;
+  background: #2f7d5c;
   color: #ffffff;
 }
 
@@ -81,20 +95,21 @@
 
 .sms-list {
   display: grid;
-  gap: 12px;
+  gap: 16px;
 }
 
 .sms-card,
 .state {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background: #ffffff;
+  border: 1px solid #eadfce;
+  border-radius: 24px;
+  background: rgba(255, 252, 247, 0.96);
+  box-shadow: 0 18px 50px rgba(63, 42, 17, 0.08);
 }
 
 .sms-card {
   display: grid;
-  gap: 14px;
-  padding: 20px;
+  gap: 16px;
+  padding: 22px;
 }
 
 .sms-card-header {
@@ -107,6 +122,7 @@
 h2 {
   margin: 0;
   font-size: 1.1rem;
+  color: #2f2418;
 }
 
 .message-title {
@@ -119,19 +135,19 @@ h2 {
   height: 14px;
   border-radius: 999px;
   margin-top: 4px;
-  background: #22c55e;
-  box-shadow: 0 0 0 5px #dcfce7;
+  background: #2f7d5c;
+  box-shadow: 0 0 0 5px rgba(47, 125, 92, 0.14);
   flex: 0 0 auto;
 }
 
 .timeline-dot.pending {
-  background: #f59e0b;
-  box-shadow: 0 0 0 5px #fef3c7;
+  background: #d38a2f;
+  box-shadow: 0 0 0 5px rgba(211, 138, 47, 0.14);
 }
 
 .timeline-dot.failed {
-  background: #ef4444;
-  box-shadow: 0 0 0 5px #fee2e2;
+  background: #c45757;
+  box-shadow: 0 0 0 5px rgba(196, 87, 87, 0.14);
 }
 
 .sms-card-header p,
@@ -144,14 +160,15 @@ h2 {
 
 .sms-card-header p {
   margin-top: 5px;
-  color: #64748b;
+  color: #6a5b49;
 }
 
 .eyebrow {
   margin-bottom: 3px;
-  color: #0f766e;
+  color: #7a6b52;
   font-size: 0.78rem;
   font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -160,26 +177,21 @@ h2 {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  padding: 0 10px;
-  background: #e0f2fe;
-  color: #0369a1;
+  padding: 0 12px;
   font-size: 0.84rem;
   font-weight: 900;
-}
-
-.status-badge {
-  background: #fef3c7;
-  color: #92400e;
+  background: #f3e4cd;
+  color: #8a622b;
 }
 
 .status-badge.sent {
-  background: #dcfce7;
-  color: #166534;
+  background: #dff5e8;
+  color: #1f6a46;
 }
 
 .status-badge.failed {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: #fdeaea;
+  color: #a33b3b;
 }
 
 .status-note {
@@ -187,39 +199,39 @@ h2 {
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  border-radius: 8px;
-  background: #f0fdf4;
-  color: #166534;
+  border-radius: 16px;
+  background: #e8f4ee;
+  color: #1f6a46;
   font-weight: 800;
 }
 
 .status-note.pending {
-  background: #fffbeb;
-  color: #92400e;
+  background: #fbf0dd;
+  color: #8a622b;
 }
 
 .status-note.failed {
-  background: #fef2f2;
-  color: #b91c1c;
+  background: #fdeeee;
+  color: #a33b3b;
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
 .info-item {
   padding: 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background: #f8fafc;
+  border: 1px solid #e7dac8;
+  border-radius: 16px;
+  background: #fffaf2;
 }
 
 .info-item span,
 .message-preview span {
   display: block;
-  color: #64748b;
+  color: #7a6b52;
   font-size: 0.86rem;
   font-weight: 800;
 }
@@ -227,19 +239,19 @@ h2 {
 .info-item strong {
   display: block;
   margin-top: 5px;
-  color: #0f172a;
+  color: #2f2418;
   font-weight: 800;
   overflow-wrap: anywhere;
 }
 
 .message-preview {
-  border-top: 1px solid #e2e8f0;
-  padding-top: 14px;
+  padding: 14px 16px 0;
+  border-top: 1px solid #eadfce;
 }
 
 .message-preview p {
   margin-top: 7px;
-  color: #334155;
+  color: #4f4336;
   line-height: 1.5;
 }
 
@@ -255,26 +267,26 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  border: 1px solid #d9c9b5;
+  border-radius: 999px;
   padding: 0 12px;
-  background: #ffffff;
-  color: #0f172a;
+  background: #fff;
+  color: #3c3125;
   font: inherit;
-  font-weight: 900;
+  font-weight: 800;
   cursor: pointer;
 }
 
 .action-button.whatsapp {
-  border-color: #bbf7d0;
-  background: #dcfce7;
-  color: #166534;
+  border-color: #b8dfc9;
+  background: #dff5e8;
+  color: #1f6a46;
 }
 
 .action-button.instagram {
-  border-color: #fbcfe8;
-  background: #fdf2f8;
-  color: #be185d;
+  border-color: #efcddd;
+  background: #fdf0f6;
+  color: #a34672;
 }
 
 .action-button:disabled {
@@ -284,13 +296,13 @@ h2 {
 
 .error,
 .error-detail {
-  color: #b91c1c;
+  color: #a33b3b;
   font-weight: 800;
 }
 
 .state {
   padding: 24px;
-  color: #64748b;
+  color: #7a6b52;
   font-weight: 800;
   text-align: center;
 }
@@ -301,6 +313,7 @@ h2 {
   }
 
   .topbar,
+  .topbar-main,
   .toolbar,
   .sms-card-header {
     flex-direction: column;
