@@ -5,6 +5,10 @@
   "outputDirectory": "dist/app-coiffure-frontend/browser",
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "https://app-coiffure-api.onrender.com/api/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
