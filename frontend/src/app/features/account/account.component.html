@@ -35,13 +35,8 @@
           </div>
           <div>
             <p class="subscription-eyebrow">Abonnement</p>
-            <h2>{{ currentAccount.abonnementActif ? 'Acces actif' : 'Acces limite' }}</h2>
-            <p>
-              Statut : <strong>{{ subscriptionLabel(currentAccount.subscriptionStatus) }}</strong>
-              <ng-container *ngIf="currentAccount.abonnementActifJusquAu">
-                · valable jusqu'au {{ currentAccount.abonnementActifJusquAu | date:'mediumDate':'':'fr' }}
-              </ng-container>
-            </p>
+            <h2>{{ subscriptionHeadline(currentAccount) }}</h2>
+            <p>{{ subscriptionDetail(currentAccount) }}</p>
           </div>
         </div>
         <p class="subscription-note">

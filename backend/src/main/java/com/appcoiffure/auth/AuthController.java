@@ -82,7 +82,7 @@ public class AuthController {
                 email,
                 passwordService.hash(request.motDePasse()),
                 SubscriptionStatus.TRIAL,
-                Instant.now().plusSeconds(14L * 24 * 60 * 60)
+                Instant.now().plusSeconds(7L * 24 * 60 * 60)
         );
 
         Coiffeuse saved = coiffeuseRepository.save(coiffeuse);

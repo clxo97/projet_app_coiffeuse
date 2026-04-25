@@ -43,7 +43,7 @@ public class CoiffeuseInitializer implements CommandLineRunner {
                 email,
                 passwordService.hash(motDePasse),
                 SubscriptionStatus.TRIAL,
-                Instant.now().plusSeconds(14L * 24 * 60 * 60)
+                Instant.now().plusSeconds(7L * 24 * 60 * 60)
         );
         coiffeuseRepository.save(coiffeuse);
     }

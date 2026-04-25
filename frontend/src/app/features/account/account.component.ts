@@ -144,12 +144,35 @@ export class AccountComponent implements OnInit {
   readonly defaultModificationTemplate = 'Votre rendez-vous coiffure a ete modifie le {date}. Prestation : {prestation}. Duree : {duree} min. A bientot.';
   readonly defaultReminderTemplate = 'Rappel : votre rendez-vous coiffure est prevu le {date}. Prestation : {prestation}. Duree : {duree} min. A bientot.';
 
+  subscriptionHeadline(account: CoiffeuseAccount): string {
+    if (account.subscriptionStatus === 'TRIAL') {
+      return 'Essai gratuit 7 jours';
+    }
+
+    return account.abonnementActif ? 'Acces actif' : 'Acces limite';
+  }
+
+  subscriptionDetail(account: CoiffeuseAccount): string {
+    const date = account.abonnementActifJusquAu
+      ? new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(account.abonnementActifJusquAu))
+      : null;
+
+    if (account.subscriptionStatus === 'TRIAL') {
+      return date
+        ? `Votre periode d essai est active jusqu'au ${date}.`
+        : 'Votre periode d essai est actuellement active.';
+    }
+
+    const label = this.subscriptionLabel(account.subscriptionStatus);
+    return date ? `Statut : ${label} · valable jusqu'au ${date}` : `Statut : ${label}`;
+  }
+
   subscriptionLabel(status: CoiffeuseAccount['subscriptionStatus']): string {
     switch (status) {
       case 'ACTIVE':
         return 'Abonnement actif';
       case 'TRIAL':
-        return 'Periode d essai';
+        return 'Essai gratuit';
       case 'PAST_DUE':
         return 'Paiement en attente';
       case 'CANCELED':
