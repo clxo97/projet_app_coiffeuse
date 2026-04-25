@@ -123,7 +123,7 @@ label {
 
 input {
   width: 100%;
-  padding: 14px 16px 14px 48px;
+  padding: 14px 52px 14px 48px;
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
   background: #fdfdfd;
@@ -145,20 +145,26 @@ input.invalid {
 
 .toggle-visibility {
   position: absolute;
-  right: 12px;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
   background: none;
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 8px;
+  padding: 0;
   font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
 }
 
 .toggle-visibility:hover {
   color: var(--primary);
+  background: rgba(185, 92, 116, 0.08);
 }
 
 .field-error {
