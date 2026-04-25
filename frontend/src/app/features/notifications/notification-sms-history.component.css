@@ -83,8 +83,8 @@
 }
 
 .filters button.active {
-  border-color: #2f7d5c;
-  background: #2f7d5c;
+  border-color: #b76e79;
+  background: linear-gradient(135deg, #d89aa4 0%, #b76e79 100%);
   color: #ffffff;
 }
 
@@ -135,14 +135,14 @@ h2 {
   height: 14px;
   border-radius: 999px;
   margin-top: 4px;
-  background: #2f7d5c;
-  box-shadow: 0 0 0 5px rgba(47, 125, 92, 0.14);
+  background: #c98793;
+  box-shadow: 0 0 0 5px rgba(201, 135, 147, 0.18);
   flex: 0 0 auto;
 }
 
 .timeline-dot.pending {
-  background: #d38a2f;
-  box-shadow: 0 0 0 5px rgba(211, 138, 47, 0.14);
+  background: #d8a15b;
+  box-shadow: 0 0 0 5px rgba(216, 161, 91, 0.16);
 }
 
 .timeline-dot.failed {
@@ -180,13 +180,13 @@ h2 {
   padding: 0 12px;
   font-size: 0.84rem;
   font-weight: 900;
-  background: #f3e4cd;
-  color: #8a622b;
+  background: #f5e2d1;
+  color: #9a6b38;
 }
 
 .status-badge.sent {
-  background: #dff5e8;
-  color: #1f6a46;
+  background: #f7e7ec;
+  color: #a45d6a;
 }
 
 .status-badge.failed {
@@ -200,14 +200,14 @@ h2 {
   gap: 8px;
   padding: 10px 12px;
   border-radius: 16px;
-  background: #e8f4ee;
-  color: #1f6a46;
+  background: #f8e8ed;
+  color: #9f5d69;
   font-weight: 800;
 }
 
 .status-note.pending {
-  background: #fbf0dd;
-  color: #8a622b;
+  background: #f8ead8;
+  color: #9a6b38;
 }
 
 .status-note.failed {
@@ -278,9 +278,9 @@ h2 {
 }
 
 .action-button.whatsapp {
-  border-color: #b8dfc9;
-  background: #dff5e8;
-  color: #1f6a46;
+  border-color: #e7c7d0;
+  background: #f9eaee;
+  color: #a45d6a;
 }
 
 .action-button.instagram {
